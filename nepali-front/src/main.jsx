@@ -1,11 +1,12 @@
 import React, { createContext, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import theme from './theme.js';
 import axios from 'axios';
 import getCookie from './getCookie.js';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'semantic-ui-css/semantic.min.css'
@@ -26,19 +27,31 @@ import ErrorPage from './ErrorPage.jsx';
 import { ProductDetails } from './ProductDetails.jsx';
 import CheckoutPage from './CheckoutPage.jsx';
 import CartProvider from './CartContext.jsx';
+import OrderConfirmation from './ConfirmationPage.jsx';
+import ConfirmationPage from './ConfirmationPage.jsx';
 
 
 function Layout() {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
   return (
     <>
       <Header />
-      <div id='page-content'>
-        <Outlet />
+      <div id="page-content" className={isHomePage ? 'homepage' : ''}>
+        <div className={isHomePage ? 'homepage-content' : ''}>
+          {isHomePage && (
+            <div className="homepage-text">
+              <h1 className="homepage-title">Welcome to Nepali Threads</h1>
+              <p className="homepage-subtitle">Explore our unique collection of Nepalese clothing.</p>
+            </div>
+          )}
+          <Outlet />
+        </div>
       </div>
       <Footer />
       <ToastContainer />
     </>
-  )
+  );
 }
 
 const router = createBrowserRouter([
@@ -77,6 +90,10 @@ const router = createBrowserRouter([
       {
         path: 'checkout',
         element: <CheckoutPage />
+      },
+      {
+        path: '/confirmation',
+        element: <ConfirmationPage />
       }
     ],
   },
@@ -96,6 +113,8 @@ const AuthContextProvider = ({ children }) => {
     </AuthContext.Provider>
   )
 }
+
+
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(

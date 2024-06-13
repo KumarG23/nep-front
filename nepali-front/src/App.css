@@ -124,10 +124,64 @@ p {
   text-align: center;
 }
 
-#home {
+.homepage {
   background-image: url('./assets/Facetune_11-06-2024-20-52-49.jpeg');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-position: center center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.homepage-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items:flex-start;
+  text-align: left;
+  color: white;
+}
+
+.homepage-text {
+  background-color: rgba(0,0,0,0.5);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.homepage-title {
+  font-size: 3em;
+  margin-bottom: 0.5em;
+}
+
+.homepage-subtitle {
+  font-size: 1.5em;
+}
+
+
+
+#stripe {
+  padding-bottom: 20%;
+  font-size: 1.5rem;
+}
+
+li {
+  list-style-type: circle;
+  font-size: 1.5rem;
+}
+
+.cart-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+#pay {
+  padding-top: 3%;
+  text-align: center;
+  padding-bottom: 3%;
 }

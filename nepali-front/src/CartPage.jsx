@@ -2,12 +2,22 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CartContext } from './CartContext';
 import axiosInstance from './axiosConfig';
 import { url } from './api';
+import StripeProvider from './StripeProvider';
+import { ProductPage } from './ProductPage';
+import CheckoutForm from './CheckoutForm';
+import axios from 'axios';
+import { PaymentElement } from '@stripe/react-stripe-js';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export const CartPage = () => {
-    const { cart, setCart, loading } = useContext(CartContext);
+    const { cart, setCart, loading, updatedCart } = useContext(CartContext);
     const [totalPrice, setTotalPrice] = useState(0);
     const [email, setEmail] = useState('');
     const [products, setProducts] = useState([]);
+    const [clientSecret, setClientSecret] = useState('');
+    const navigate = useNavigate();
+    
+    
 
     useEffect(() => {
         const calculateTotalPrice = () => {
@@ -43,25 +53,44 @@ export const CartPage = () => {
         }
     }, [cart, loading]);
 
-    const updateQuantity = async (itemId, newQuantity) => {
-        try {
-            const response = await axios.put(`${url}/cart/${itemId}/`, { quantity: newQuantity });
-            setCart(cart.map(item =>
-                item.id === itemId ? { ...item, quantity: response.data.quantity } : item
-            ));
-        } catch (error) {
-            console.error('Error updating quantity:', error);
+
+    useEffect(() => {
+        const createPaymentIntent = async () => {
+          try {
+            const response = await axiosInstance.post(`${url}/create-payment-intent/`, {
+              amount: totalPrice * 100, // amount in cents
+            });
+            setClientSecret(response.data.clientSecret);
+          } catch (error) {
+            console.error('Error creating payment intent:', error);
+          }
+        };
+    
+        if (totalPrice > 0) {
+          createPaymentIntent();
         }
+      }, [totalPrice]);
+
+      const updateQuantity = (itemId, newQuantity) => {
+        setCart(cart.map(item =>
+            item.id === itemId ? { ...item, quantity: newQuantity } : item
+        ));
     };
 
-    const removeItem = async (itemId) => {
-        try {
-            await axiosInstance.delete(`/cart/${itemId}/`);
-            setCart(cart.filter(item => item.id !== itemId));
-        } catch (error) {
-            console.error('Error removing item:', error);
-        }
+    const removeItem = (itemId) => {
+        setCart(cart.filter(item => item.id !== itemId));
     };
+
+
+
+    // const removeItem = async (itemId) => {
+    //     try {
+    //         await axiosInstance.delete(`${url}/cart/${itemId}/`);
+    //         setCart(cart.filter(item => item.id !== itemId));
+    //     } catch (error) {
+    //         console.error('Error removing item:', error);
+    //     }
+    // };
 
     const handleCheckout = async (isGuest) => {
         if (isGuest && !email) {
@@ -92,14 +121,34 @@ export const CartPage = () => {
             const response = await axiosInstance.post(endpoint, requestData, { headers });
             // Handle successful checkout (e.g., redirect to order confirmation page)
             console.log('Order placed successfully', response.data);
+            navigate('/confirmation?payment_intent=' + response.data.payment_intent + '&payment_intent_client_secret=' + response.data.payment_intent_client_secret + '&redirect_status=' + response.data.status);
         } catch (error) {
             console.error('Error placing order:', error);
         }
     };
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        handleCheckout(false);
+    }
+
     if (loading) {
         return <div>Loading...</div>;
     }
+
+
+    // const deleteCartItem = async (cartProductId) => {
+    //     try {
+    //       const response = await axiosInstance.delete(`${url}/cart/${cartProductId}/delete`);
+    //       console.log('Item Id: ', cartProductId);
+    //       console.log('Delete Item: ', response);
+    //       setCart(cart.filter(item => item.id !== cart))
+    //     } catch (error) {
+    //       console.error('Error deleting item: ', error);
+    //       throw error;
+    //     }
+    //   };
+      
 
     return (
         <div>
@@ -111,7 +160,7 @@ export const CartPage = () => {
                     {cart.map(item => {
                         const product = products.find(p => p.id === item.id);
                         return (
-                            <li key={item.id}>
+                            <li key={item.id} className='cart-item'>
                                 {product ? (
                                     <>
                                         <div>Product Name: {product.name}</div>
@@ -130,18 +179,12 @@ export const CartPage = () => {
                 </ul>
             )}
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
-            <div>
-                <h4>Guest Checkout</h4>
-                <input 
-                    type="email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                    placeholder="Enter your email"
-                />
-                <button onClick={() => handleCheckout(true)}>Checkout as Guest</button>
-            </div>
-            <button onClick={() => handleCheckout(false)}>Checkout as Logged-in User</button>
-        </div>
+            {clientSecret && (
+        <StripeProvider clientSecret={clientSecret}>
+          <CheckoutForm handleCheckout={handleCheckout} />
+        </StripeProvider>
+      )}
+      </div>
     );
 };
 
