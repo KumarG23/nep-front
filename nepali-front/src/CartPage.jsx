@@ -7,6 +7,7 @@ import { ProductPage } from './ProductPage';
 import CheckoutForm from './CheckoutForm';
 import axios from 'axios';
 import { PaymentElement } from '@stripe/react-stripe-js';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export const CartPage = () => {
     const { cart, setCart, loading, updatedCart } = useContext(CartContext);
@@ -14,6 +15,7 @@ export const CartPage = () => {
     const [email, setEmail] = useState('');
     const [products, setProducts] = useState([]);
     const [clientSecret, setClientSecret] = useState('');
+    const navigate = useNavigate();
     
     
 
@@ -69,16 +71,17 @@ export const CartPage = () => {
         }
       }, [totalPrice]);
 
-    const updateQuantity = async (itemId, newQuantity) => {
-        try {
-            const response = await axios.put(`${url}/cart/${itemId}/`, { quantity: newQuantity });
-            setCart(cart.map(item =>
-                item.id === itemId ? { ...item, quantity: response.data.quantity } : item
-            ));
-        } catch (error) {
-            console.error('Error updating quantity:', error);
-        }
+      const updateQuantity = (itemId, newQuantity) => {
+        setCart(cart.map(item =>
+            item.id === itemId ? { ...item, quantity: newQuantity } : item
+        ));
     };
+
+    const removeItem = (itemId) => {
+        setCart(cart.filter(item => item.id !== itemId));
+    };
+
+
 
     // const removeItem = async (itemId) => {
     //     try {
@@ -118,26 +121,33 @@ export const CartPage = () => {
             const response = await axiosInstance.post(endpoint, requestData, { headers });
             // Handle successful checkout (e.g., redirect to order confirmation page)
             console.log('Order placed successfully', response.data);
+            navigate('/confirmation?payment_intent=' + response.data.payment_intent + '&payment_intent_client_secret=' + response.data.payment_intent_client_secret + '&redirect_status=' + response.data.status);
         } catch (error) {
             console.error('Error placing order:', error);
         }
     };
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        handleCheckout(false);
+    }
+
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    const deleteCartItem = async (cartProductId) => {
-        try {
-          const response = await axiosInstance.delete(`${url}/cart/${cartProductId}/delete`);
-          console.log('Item Id: ', cartProductId);
-          console.log('Delete Item: ', response);
-          setCart(cart.filter(item => item.id !== cart))
-        } catch (error) {
-          console.error('Error deleting item: ', error);
-          throw error;
-        }
-      };
+
+    // const deleteCartItem = async (cartProductId) => {
+    //     try {
+    //       const response = await axiosInstance.delete(`${url}/cart/${cartProductId}/delete`);
+    //       console.log('Item Id: ', cartProductId);
+    //       console.log('Delete Item: ', response);
+    //       setCart(cart.filter(item => item.id !== cart))
+    //     } catch (error) {
+    //       console.error('Error deleting item: ', error);
+    //       throw error;
+    //     }
+    //   };
       
 
     return (
@@ -150,15 +160,15 @@ export const CartPage = () => {
                     {cart.map(item => {
                         const product = products.find(p => p.id === item.id);
                         return (
-                            <li key={item.id}>
+                            <li key={item.id} className='cart-item'>
                                 {product ? (
                                     <>
                                         <div>Product Name: {product.name}</div>
                                         <div>Product Price: ${product.price}</div>
                                         <div>Quantity: {item.quantity}</div>
-                                        {/* <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button> */}
-                                        <button onClick={() => deleteCartItem(product.id)}>Remove</button>
+                                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                                        <button onClick={() => removeItem(item.id)}>Remove</button>
                                     </>
                                 ) : (
                                     <div>Loading product details...</div>
@@ -171,10 +181,7 @@ export const CartPage = () => {
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
             {clientSecret && (
         <StripeProvider clientSecret={clientSecret}>
-          <form>
-            <PaymentElement />
-            <button type="submit">Submit</button>
-          </form>
+          <CheckoutForm handleCheckout={handleCheckout} />
         </StripeProvider>
       )}
       </div>

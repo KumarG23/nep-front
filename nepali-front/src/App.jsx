@@ -6,7 +6,8 @@ function App() {
  
 
   return (
-    <div id='home'>
+    <div className='homepage'>
+      
     </div>
   )
 }
