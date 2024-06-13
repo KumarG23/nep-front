@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const url = 'https://nep-back.fly.dev';
+export const url = 'https://nep-back.fly.dev/';
 // 'http://127.0.0.1:8000'
 export const createUser = ({ username, email, password, firstName, lastName }) => {
     axios({

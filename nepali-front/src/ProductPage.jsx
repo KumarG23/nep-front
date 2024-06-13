@@ -39,7 +39,7 @@ export const ProductPage = () => {
         <Card key={product.id} maxW='sm'>
         <CardBody>
           <Image
-            src={`https://nep-back.fly.dev${product.image}`}
+            src={`https://nep-back.fly.dev/${product.image}`}
             alt={product.name}
             borderRadius='lg'
           />
