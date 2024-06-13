@@ -2,12 +2,20 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CartContext } from './CartContext';
 import axiosInstance from './axiosConfig';
 import { url } from './api';
+import StripeProvider from './StripeProvider';
+import { ProductPage } from './ProductPage';
+import CheckoutForm from './CheckoutForm';
+import axios from 'axios';
+import { PaymentElement } from '@stripe/react-stripe-js';
 
 export const CartPage = () => {
-    const { cart, setCart, loading } = useContext(CartContext);
+    const { cart, setCart, loading, updatedCart } = useContext(CartContext);
     const [totalPrice, setTotalPrice] = useState(0);
     const [email, setEmail] = useState('');
     const [products, setProducts] = useState([]);
+    const [clientSecret, setClientSecret] = useState('');
+    
+    
 
     useEffect(() => {
         const calculateTotalPrice = () => {
@@ -43,6 +51,24 @@ export const CartPage = () => {
         }
     }, [cart, loading]);
 
+
+    useEffect(() => {
+        const createPaymentIntent = async () => {
+          try {
+            const response = await axiosInstance.post(`${url}/create-payment-intent/`, {
+              amount: totalPrice * 100, // amount in cents
+            });
+            setClientSecret(response.data.clientSecret);
+          } catch (error) {
+            console.error('Error creating payment intent:', error);
+          }
+        };
+    
+        if (totalPrice > 0) {
+          createPaymentIntent();
+        }
+      }, [totalPrice]);
+
     const updateQuantity = async (itemId, newQuantity) => {
         try {
             const response = await axios.put(`${url}/cart/${itemId}/`, { quantity: newQuantity });
@@ -54,14 +80,14 @@ export const CartPage = () => {
         }
     };
 
-    const removeItem = async (itemId) => {
-        try {
-            await axiosInstance.delete(`/cart/${itemId}/`);
-            setCart(cart.filter(item => item.id !== itemId));
-        } catch (error) {
-            console.error('Error removing item:', error);
-        }
-    };
+    // const removeItem = async (itemId) => {
+    //     try {
+    //         await axiosInstance.delete(`${url}/cart/${itemId}/`);
+    //         setCart(cart.filter(item => item.id !== itemId));
+    //     } catch (error) {
+    //         console.error('Error removing item:', error);
+    //     }
+    // };
 
     const handleCheckout = async (isGuest) => {
         if (isGuest && !email) {
@@ -101,6 +127,19 @@ export const CartPage = () => {
         return <div>Loading...</div>;
     }
 
+    const deleteCartItem = async (cartProductId) => {
+        try {
+          const response = await axiosInstance.delete(`${url}/cart/${cartProductId}/delete`);
+          console.log('Item Id: ', cartProductId);
+          console.log('Delete Item: ', response);
+          setCart(cart.filter(item => item.id !== cart))
+        } catch (error) {
+          console.error('Error deleting item: ', error);
+          throw error;
+        }
+      };
+      
+
     return (
         <div>
             <h2>Your Cart</h2>
@@ -117,9 +156,9 @@ export const CartPage = () => {
                                         <div>Product Name: {product.name}</div>
                                         <div>Product Price: ${product.price}</div>
                                         <div>Quantity: {item.quantity}</div>
-                                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                                        <button onClick={() => removeItem(item.id)}>Remove</button>
+                                        {/* <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button> */}
+                                        <button onClick={() => deleteCartItem(product.id)}>Remove</button>
                                     </>
                                 ) : (
                                     <div>Loading product details...</div>
@@ -130,18 +169,15 @@ export const CartPage = () => {
                 </ul>
             )}
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
-            <div>
-                <h4>Guest Checkout</h4>
-                <input 
-                    type="email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                    placeholder="Enter your email"
-                />
-                <button onClick={() => handleCheckout(true)}>Checkout as Guest</button>
-            </div>
-            <button onClick={() => handleCheckout(false)}>Checkout as Logged-in User</button>
-        </div>
+            {clientSecret && (
+        <StripeProvider clientSecret={clientSecret}>
+          <form>
+            <PaymentElement />
+            <button type="submit">Submit</button>
+          </form>
+        </StripeProvider>
+      )}
+      </div>
     );
 };
 

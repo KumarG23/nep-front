@@ -7,6 +7,7 @@ import theme from './theme.js';
 import axios from 'axios';
 import getCookie from './getCookie.js';
 
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'semantic-ui-css/semantic.min.css'
 import { ChakraProvider } from '@chakra-ui/react'
@@ -96,6 +97,8 @@ const AuthContextProvider = ({ children }) => {
     </AuthContext.Provider>
   )
 }
+
+
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(

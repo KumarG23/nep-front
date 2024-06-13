@@ -8,10 +8,17 @@ import { toast } from 'react-toastify';
 
 export const CartContext = createContext();
 
+
 export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState(localStorage.getItem('cart') || ([]));
+    const [cart, setCart] = useState(() => {
+        const savedCart = localStorage.getItem('cart');
+        return savedCart ? JSON.parse(savedCart) : [];
+    });
+
     const [loading, setLoading] = useState(true);
-    // const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || (''));
+
+
+
     useEffect(() => {
         const fetchCart = async () => {
             try {
@@ -29,9 +36,20 @@ export const CartProvider = ({ children }) => {
                 setLoading(false);
             }
         };
-
-        fetchCart();
+        const savedCart = localStorage.getItem('cart');
+        if (!savedCart) {
+            fetchCart();
+        } else {
+            setLoading(false);
+        }
     }, []);
+
+
+    
+
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }, [cart]);
 
     const addToCart = async (productId, productName, productPrice, quantity = 1) => {
         try {
@@ -68,7 +86,7 @@ export const CartProvider = ({ children }) => {
             console.log('Item added to cart successfully', response.data);
         } catch (error) {
             console.error('Error adding to cart:', error);
-            // Implement error handling as needed
+            toast.error('Error adding item to cart');
         }
     };
 

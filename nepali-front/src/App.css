@@ -131,3 +131,8 @@ p {
   background-attachment: fixed;
   background-position: center center;
 }
+
+#stripe {
+  padding-bottom: 20%;
+  font-size: 1.5rem;
+}

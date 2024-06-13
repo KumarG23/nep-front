@@ -24,10 +24,10 @@ export const ProductPage = () => {
     handleGetProducts();
   }, []);
 
-  const handleAddToCart = (product) => {
-    addToCart(productId, product.name, product.price, 1);
-    const updatedCart = [...cart, { id: product.id, name: product.name, price: product.price, quantity: 1}]
-    localStorage.setItem('cart', cart);
+  const handleAddToCart = (productId) => {
+    addToCart(productId, products.name, products.price, 1);
+    const updatedCart = [...cart, { id: products.id, name: products.name, price: products.price, quantity: 1}]
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
   }
 
 
