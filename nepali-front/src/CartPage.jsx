@@ -3,14 +3,11 @@ import { CartContext } from './CartContext';
 import axiosInstance from './axiosConfig';
 import { url } from './api';
 import StripeProvider from './StripeProvider';
-import CheckoutForm from './CheckoutForm';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export const CartPage = () => {
     const { cart, setCart, loading } = useContext(CartContext);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [email, setEmail] = useState('');
     const [products, setProducts] = useState([]);
     const [clientSecret, setClientSecret] = useState('');
     const navigate = useNavigate();
@@ -67,16 +64,18 @@ export const CartPage = () => {
     }, [totalPrice]);
 
     const updateQuantity = (itemId, newQuantity) => {
-        setCart(cart.map(item =>
-            item.id === itemId ? { ...item, quantity: newQuantity } : item
-        ));
+        if (newQuantity > 0) { // Ensure quantity is not zero or negative
+            setCart(cart.map(item =>
+                item.id === itemId ? { ...item, quantity: newQuantity } : item
+            ));
+        }
     };
 
     const removeItem = (itemId) => {
         setCart(cart.filter(item => item.id !== itemId));
     };
 
-    const handleCheckout = async (paymentIntent) => { // Change: Added paymentIntent parameter
+    const handleCheckout = async (paymentIntent) => {
         try {
             const requestData = {
                 cart: cart.map(item => ({
@@ -86,20 +85,25 @@ export const CartPage = () => {
                     price: item.price,
                 })),
                 total_price: totalPrice,
-                payment_intent: paymentIntent.id // Change: Added payment_intent to requestData
+                payment_intent_id: paymentIntent.id
             };
 
-            console.log('request data: ', requestData);
+            console.log('Request Data:', requestData);  // Log the request data
 
             const headers = {
-                Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                'Content-Type': 'application/json'
             };
+
+            if (localStorage.getItem('access_token')) {
+                headers['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`;
+            }
 
             const response = await axiosInstance.post(`${url}/orders/confirm/`, requestData, { headers });
             console.log('Order placed successfully', response.data);
             navigate(`/confirmation?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}&redirect_status=${paymentIntent.status}`);
         } catch (error) {
             console.error('Error placing order:', error);
+            alert('There was an error placing your order. Please try again.');
         }
     };
 
@@ -137,9 +141,7 @@ export const CartPage = () => {
             )}
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
             {clientSecret && (
-                <StripeProvider clientSecret={clientSecret}>
-                    <CheckoutForm handleCheckout={handleCheckout} />
-                </StripeProvider>
+                <StripeProvider clientSecret={clientSecret} handleCheckout={handleCheckout} />
             )}
         </div>
     );
