@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { useNavigate } from 'react-router-dom';
 
-const CheckoutForm = ({ handleCheckout }) => {
+const CheckoutForm = ({ handleCheckouts }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const CheckoutForm = ({ handleCheckout }) => {
       setErrorMessage(error.message);
     } else {
       // Custom redirect after payment
-      handleCheckout(paymentIntent);
+      handleCheckouts(paymentIntent);
       navigate(`/confirmation?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}&redirect_status=${paymentIntent.status}`);
     }
   };

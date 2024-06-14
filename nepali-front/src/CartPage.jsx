@@ -57,6 +57,12 @@ export const CartPage = () => {
     useEffect(() => {
         const createPaymentIntent = async () => {
           try {
+            const orderItems = cart.map(item => ({
+                product_id: item.id,
+                quantity: item.quantity,
+                name: item.name,
+                price: item.price,
+            }));
             const response = await axiosInstance.post(`${url}/create-payment-intent/`, {
               amount: totalPrice * 100, // amount in cents
             });
@@ -148,7 +154,7 @@ export const CartPage = () => {
     //       throw error;
     //     }
     //   };
-      
+      console.log('cart page cart: ', cart);
 
     return (
         <div>
