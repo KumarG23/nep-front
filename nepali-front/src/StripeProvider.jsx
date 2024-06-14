@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { CartPage } from './CartPage';
@@ -10,6 +10,10 @@ const StripeProvider = ({ clientSecret, handleCheckout }) => {
   const options = {
     clientSecret,
   };
+
+  useEffect(() => {
+    console.log('strip provider rendered with client secret', clientSecret);
+  }, [clientSecret]);
 
   return (
     <Elements stripe={stripePromise} options={options}>

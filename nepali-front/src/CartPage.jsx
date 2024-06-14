@@ -53,6 +53,7 @@ export const CartPage = () => {
                     amount: totalPrice * 100, // amount in cents
                 });
                 setClientSecret(response.data.clientSecret);
+                console.log('payment intent created, client secret: ', response.data.clientSecret);
             } catch (error) {
                 console.error('Error creating payment intent:', error);
             }
@@ -107,6 +108,10 @@ export const CartPage = () => {
             alert('There was an error placing your order. Please try again.');
         }
     };
+
+    useEffect(() => {
+        console.log('cart page rendered with client secret: ', clientSecret);
+    }, [clientSecret]);
 
     if (loading) {
         return <div>Loading...</div>;

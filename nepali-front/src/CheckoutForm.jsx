@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,10 @@ const CheckoutForm = ({ handleCheckout }) => {
   const elements = useElements();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    console.log('checkout form rendered');
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
