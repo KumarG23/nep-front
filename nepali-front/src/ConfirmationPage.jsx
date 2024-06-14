@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { url } from './api';
 
 const ConfirmationPage = () => {
     const location = useLocation();
@@ -17,7 +18,7 @@ const ConfirmationPage = () => {
         const confirmOrder = async () => {
             if (status === 'succeeded' && paymentIntentId) {
                 try {
-                    const response = await axios.post('/orders/confirm/', {
+                    const response = await axios.post(`${url}/orders/confirm/`, {
                         payment_intent_id: paymentIntentId,
                     });
                     console.log('Order confirmed:', response.data);
