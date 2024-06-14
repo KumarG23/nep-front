@@ -30,7 +30,9 @@ export const ProductPage = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   }
 
-
+  if (loading) {
+    return <div>loading...</div>
+  }
   
 
   return (

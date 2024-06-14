@@ -63,7 +63,7 @@ export const CartPage = () => {
                 name: item.name,
                 price: item.price,
             }));
-            const response = await axiosInstance.post(`${url}/create-payment-intent/`, {
+            const response = await axiosInstance.post('/create-payment-intent/', {
               amount: totalPrice * 100, // amount in cents
             });
             setClientSecret(response.data.clientSecret);
@@ -105,7 +105,7 @@ export const CartPage = () => {
         }
 
         try {
-            const endpoint = isGuest ? `${url}/orders/guest/` : `${url}/orders/`;
+            const endpoint = isGuest ? '/orders/guest/' : '/orders/';
             const requestData = {
                 cart: cart.map(item => ({
                     product_id: item.id,
