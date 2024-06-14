@@ -27,7 +27,7 @@ const CheckoutForm = ({ handleCheckout }) => {
       setErrorMessage(error.message);
     } else {
       // Custom redirect after payment
-      handleCheckout(paymentIntent);
+      await handleCheckout(paymentIntent);
       navigate(`/confirmation?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}&redirect_status=${paymentIntent.status}`);
     }
   };
