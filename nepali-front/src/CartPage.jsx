@@ -93,7 +93,7 @@ export const CartPage = () => {
                 Authorization: `Bearer ${localStorage.getItem('access_token')}`
             };
 
-            const response = await axiosInstance.post(`${url}/orders/`, requestData, { headers });
+            const response = await axiosInstance.post(`${url}/orders/confirm/`, requestData, { headers });
             console.log('Order placed successfully', response.data);
             navigate(`/confirmation?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}&redirect_status=${paymentIntent.status}`);
         } catch (error) {
