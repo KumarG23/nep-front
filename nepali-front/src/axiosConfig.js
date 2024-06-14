@@ -1,7 +1,8 @@
 // axiosConfig.js
 import axios from 'axios';
 import getCookie from './getCookie';
-export const baseURL = 'https://nep-back.fly.dev'
+// export const baseURL = 'https://nep-back.fly.dev'
+export const baseURL = 'http://127.0.0.1:8000'
 // Create an Axios instance
 const axiosInstance = axios.create({
     baseURL: 'https://nep-back.fly.dev',

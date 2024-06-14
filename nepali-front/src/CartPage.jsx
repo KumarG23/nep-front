@@ -3,33 +3,26 @@ import { CartContext } from './CartContext';
 import axiosInstance from './axiosConfig';
 import { url } from './api';
 import StripeProvider from './StripeProvider';
-import { ProductPage } from './ProductPage';
 import CheckoutForm from './CheckoutForm';
-import axios from 'axios';
-import { PaymentElement } from '@stripe/react-stripe-js';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const CartPage = () => {
-    const { cart, setCart, loading, updatedCart } = useContext(CartContext);
+    const { cart, setCart, loading } = useContext(CartContext);
     const [totalPrice, setTotalPrice] = useState(0);
     const [email, setEmail] = useState('');
     const [products, setProducts] = useState([]);
     const [clientSecret, setClientSecret] = useState('');
     const navigate = useNavigate();
     
-    
-
     useEffect(() => {
         const calculateTotalPrice = () => {
             if (!cart || cart.length === 0) {
                 setTotalPrice(0);
                 return;
             }
-
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             setTotalPrice(total);
         };
-
         if (!loading) {
             calculateTotalPrice();
         }
@@ -47,37 +40,37 @@ export const CartPage = () => {
                 console.error('Error fetching product details:', error);
             }
         };
-
         if (!loading && cart.length > 0) {
             fetchProductDetails();
         }
     }, [cart, loading]);
 
-
     useEffect(() => {
         const createPaymentIntent = async () => {
-          try {
-            const orderItems = cart.map(item => ({
-                product_id: item.id,
-                quantity: item.quantity,
-                name: item.name,
-                price: item.price,
-            }));
-            const response = await axiosInstance.post('/create-payment-intent/', {
-              amount: totalPrice * 100, // amount in cents
-            });
-            setClientSecret(response.data.clientSecret);
-          } catch (error) {
-            console.error('Error creating payment intent:', error);
-          }
+            try {
+                const orderItems = cart.map(item => ({
+                    product_id: item.id,
+                    quantity: item.quantity,
+                    name: item.name,
+                    price: item.price,
+                }));
+                const response = await axiosInstance.post(`${url}/create-payment-intent/`, {
+                    amount: totalPrice * 100, // amount in cents
+                    metadata: {
+                        items: JSON.stringify(orderItems),
+                    },
+                });
+                setClientSecret(response.data.clientSecret);
+            } catch (error) {
+                console.error('Error creating payment intent:', error);
+            }
         };
-    
         if (totalPrice > 0) {
-          createPaymentIntent();
+            createPaymentIntent();
         }
-      }, [totalPrice]);
+    }, [totalPrice]);
 
-      const updateQuantity = (itemId, newQuantity) => {
+    const updateQuantity = (itemId, newQuantity) => {
         setCart(cart.map(item =>
             item.id === itemId ? { ...item, quantity: newQuantity } : item
         ));
@@ -87,17 +80,6 @@ export const CartPage = () => {
         setCart(cart.filter(item => item.id !== itemId));
     };
 
-
-
-    // const removeItem = async (itemId) => {
-    //     try {
-    //         await axiosInstance.delete(`${url}/cart/${itemId}/`);
-    //         setCart(cart.filter(item => item.id !== itemId));
-    //     } catch (error) {
-    //         console.error('Error removing item:', error);
-    //     }
-    // };
-
     const handleCheckout = async (isGuest) => {
         if (isGuest && !email) {
             alert('Please enter an email for guest checkout.');
@@ -105,7 +87,7 @@ export const CartPage = () => {
         }
 
         try {
-            const endpoint = isGuest ? '/orders/guest/' : '/orders/';
+            const endpoint = isGuest ? `${url}/orders/guest/` : `${url}/orders/`;
             const requestData = {
                 cart: cart.map(item => ({
                     product_id: item.id,
@@ -142,20 +124,6 @@ export const CartPage = () => {
         return <div>Loading...</div>;
     }
 
-
-    // const deleteCartItem = async (cartProductId) => {
-    //     try {
-    //       const response = await axiosInstance.delete(`${url}/cart/${cartProductId}/delete`);
-    //       console.log('Item Id: ', cartProductId);
-    //       console.log('Delete Item: ', response);
-    //       setCart(cart.filter(item => item.id !== cart))
-    //     } catch (error) {
-    //       console.error('Error deleting item: ', error);
-    //       throw error;
-    //     }
-    //   };
-      console.log('cart page cart: ', cart);
-
     return (
         <div>
             <h2>Your Cart</h2>
@@ -186,11 +154,11 @@ export const CartPage = () => {
             )}
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
             {clientSecret && (
-        <StripeProvider clientSecret={clientSecret}>
-          <CheckoutForm handleCheckout={handleCheckout} />
-        </StripeProvider>
-      )}
-      </div>
+                <StripeProvider clientSecret={clientSecret}>
+                    <CheckoutForm handleCheckout={handleCheckout} />
+                </StripeProvider>
+            )}
+        </div>
     );
 };
 

@@ -6,7 +6,7 @@ import { ChakraProvider, Card, CardHeader, CardBody, CardFooter, Image, Stack, H
 import theme from './theme';
 
 export const ProductPage = () => {
-    const { cart, setCart, addToCart } = useContext(CartContext)
+    const { cart, setCart, addToCart, loading } = useContext(CartContext)
   const [products, setProducts] = useState([]);
   const navigate = useNavigate;
 
@@ -41,7 +41,7 @@ export const ProductPage = () => {
         <Card key={product.id} maxW='sm'>
         <CardBody>
           <Image
-            src={`https://nep-back.fly.dev${product.image}`}
+            src={`http://127.0.0.1:8000/${product.image}`}
             alt={product.name}
             borderRadius='lg'
           />
