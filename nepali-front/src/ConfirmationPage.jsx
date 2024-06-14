@@ -20,6 +20,9 @@ const ConfirmationPage = () => {
                 try {
                     const response = await axios.post(`${url}/orders/confirm/`, {
                         payment_intent_id: paymentIntentId,
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
                     });
                     console.log('Order confirmed:', response.data);
                 } catch (error) {

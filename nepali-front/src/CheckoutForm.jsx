@@ -1,4 +1,4 @@
-// CheckoutForm.jsx
+
 import React, { useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { useNavigate } from 'react-router-dom';
