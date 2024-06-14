@@ -99,7 +99,7 @@ export const CartPage = () => {
         }
 
         try {
-            const endpoint = isGuest ? `${url}/orders/guest/` : `${url}/orders/`;
+            const endpoint = isGuest ? `${url}/orders/guest/` : `${url}/orders/confirm`;
             const requestData = {
                 cart: cart.map(item => ({
                     product_id: item.id,
