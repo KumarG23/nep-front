@@ -3,11 +3,14 @@ import { CartContext } from './CartContext';
 import axiosInstance from './axiosConfig';
 import { url } from './api';
 import StripeProvider from './StripeProvider';
+import CheckoutForm from './CheckoutForm';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export const CartPage = () => {
     const { cart, setCart, loading } = useContext(CartContext);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [email, setEmail] = useState('');
     const [products, setProducts] = useState([]);
     const [clientSecret, setClientSecret] = useState('');
     const navigate = useNavigate();
@@ -53,7 +56,6 @@ export const CartPage = () => {
                     amount: totalPrice * 100, // amount in cents
                 });
                 setClientSecret(response.data.clientSecret);
-                console.log('payment intent created, client secret: ', response.data.clientSecret);
             } catch (error) {
                 console.error('Error creating payment intent:', error);
             }
@@ -65,11 +67,9 @@ export const CartPage = () => {
     }, [totalPrice]);
 
     const updateQuantity = (itemId, newQuantity) => {
-        if (newQuantity > 0) { // Ensure quantity is not zero or negative
-            setCart(cart.map(item =>
-                item.id === itemId ? { ...item, quantity: newQuantity } : item
-            ));
-        }
+        setCart(cart.map(item =>
+            item.id === itemId ? { ...item, quantity: newQuantity } : item
+        ));
     };
 
     const removeItem = (itemId) => {
@@ -77,7 +77,6 @@ export const CartPage = () => {
     };
 
     const handleCheckout = async (paymentIntent) => {
-        console.log('handle checkout called with payment intent: ', paymentIntent);
         try {
             const requestData = {
                 cart: cart.map(item => ({
@@ -87,31 +86,22 @@ export const CartPage = () => {
                     price: item.price,
                 })),
                 total_price: totalPrice,
-                payment_intent_id: paymentIntent.id
+                payment_intent: paymentIntent.id
             };
 
-            console.log('Request Data:', requestData);  // Log the request data
+            console.log('request data: ', requestData);
 
             const headers = {
-                'Content-Type': 'application/json'
+                Authorization: `Bearer ${localStorage.getItem('access_token')}`
             };
 
-            if (localStorage.getItem('access_token')) {
-                headers['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`;
-            }
-
-            const response = await axiosInstance.post(`${url}/orders/confirm/`, requestData, { headers });
+            const response = await axiosInstance.post(`${url}/orders/`, requestData, { headers });
             console.log('Order placed successfully', response.data);
             navigate(`/confirmation?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}&redirect_status=${paymentIntent.status}`);
         } catch (error) {
             console.error('Error placing order:', error);
-            alert('There was an error placing your order. Please try again.');
         }
     };
-
-    useEffect(() => {
-        console.log('cart page rendered with client secret: ', clientSecret);
-    }, [clientSecret]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -147,10 +137,13 @@ export const CartPage = () => {
             )}
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
             {clientSecret && (
-                <StripeProvider clientSecret={clientSecret} handleCheckout={handleCheckout} />
+                <StripeProvider clientSecret={clientSecret}>
+                    <CheckoutForm handleCheckout={handleCheckout} />
+                </StripeProvider>
             )}
         </div>
     );
 };
+
 
 
