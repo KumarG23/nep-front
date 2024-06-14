@@ -89,6 +89,8 @@ export const CartPage = () => {
                 payment_intent: paymentIntent.id // Change: Added payment_intent to requestData
             };
 
+            console.log('request data: ', requestData);
+
             const headers = {
                 Authorization: `Bearer ${localStorage.getItem('access_token')}`
             };
@@ -136,7 +138,7 @@ export const CartPage = () => {
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
             {clientSecret && (
                 <StripeProvider clientSecret={clientSecret}>
-                    <CheckoutForm handleCheckout={handleCheckout} /> {/* Change: Pass handleCheckout */}
+                    <CheckoutForm handleCheckout={handleCheckout} />
                 </StripeProvider>
             )}
         </div>

@@ -13,7 +13,7 @@ const StripeProvider = ({ clientSecret }) => {
 
   return (
     <Elements stripe={stripePromise} options={options}>
-      <CheckoutForm/>
+      <CheckoutForm handleCheckout={handleCheckout}/>
     </Elements>
   );
 };
