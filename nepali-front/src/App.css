@@ -89,7 +89,7 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding-bottom: 5%;
+  padding: 5%;
 }
 
 #title {
