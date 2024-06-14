@@ -18,16 +18,21 @@ const ConfirmationPage = () => {
         const confirmOrder = async () => {
             if (status === 'succeeded' && paymentIntentId) {
                 try {
+                    console.log('Sending confirmation request with:', {
+                        payment_intent_id: paymentIntentId,
+                    });
+
                     const response = await axios.post(`${url}/orders/confirm/`, {
                         payment_intent_id: paymentIntentId,
                     }, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
                     });
+
                     console.log('Order confirmed:', response.data);
                 } catch (error) {
-                    console.error('Error confirming order:', error);
+                    console.error('Error confirming order:', error.response ? error.response.data : error.message);
                 }
             }
         };
@@ -55,5 +60,6 @@ const ConfirmationPage = () => {
 };
 
 export default ConfirmationPage;
+
 
 
