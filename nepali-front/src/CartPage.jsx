@@ -76,6 +76,7 @@ export const CartPage = () => {
     };
 
     const handleCheckout = async (paymentIntent) => {
+        console.log('handle checkout called with payment intent: ', paymentIntent);
         try {
             const requestData = {
                 cart: cart.map(item => ({

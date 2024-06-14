@@ -13,8 +13,11 @@ const CheckoutForm = ({ handleCheckout }) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
+      console.log('stripe or elements')
       return;
     }
+
+    console.log('submitting payment...')
 
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
@@ -26,7 +29,7 @@ const CheckoutForm = ({ handleCheckout }) => {
     if (error) {
       setErrorMessage(error.message);
     } else {
-      // Custom redirect after payment
+      console.log('payment successful, calling handle checkout');
       await handleCheckout(paymentIntent);
       navigate(`/confirmation?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}&redirect_status=${paymentIntent.status}`);
     }
