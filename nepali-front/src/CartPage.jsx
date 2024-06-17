@@ -10,31 +10,31 @@ import { PaymentElement } from "@stripe/react-stripe-js";
 import { Navigate, useNavigate } from "react-router-dom";
 
 export const CartPage = () => {
-  const { cart, setCart, loading, updatedCart } = useContext(CartContext);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [email, setEmail] = useState("");
+  const { cart, setCart, loading, updatedCart, totalPrice } = useContext(CartContext);
+//   const [totalPrice, setTotalPrice] = useState(0);
+//   const [email, setEmail] = useState("");
   const [products, setProducts] = useState([]);
   const [clientSecret, setClientSecret] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const calculateTotalPrice = () => {
-      if (!cart || cart.length === 0) {
-        setTotalPrice(0);
-        return;
-      }
+//   useEffect(() => {
+//     const calculateTotalPrice = () => {
+//       if (!cart || cart.length === 0) {
+//         setTotalPrice(0);
+//         return;
+//       }
 
-      const total = cart.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      );
-      setTotalPrice(total);
-    };
+//       const total = cart.reduce(
+//         (sum, item) => sum + item.price * item.quantity,
+//         0
+//       );
+//       setTotalPrice(total);
+//     };
 
-    if (!loading) {
-      calculateTotalPrice();
-    }
-  }, [cart, loading]);
+//     if (!loading) {
+//       calculateTotalPrice();
+//     }
+//   }, [cart, loading]);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -98,65 +98,63 @@ export const CartPage = () => {
   //     }
   // };
 
-  const handleCheckout = async (isGuest) => {
-    console.log("BLAMMO: HERE>>>>>>>>>>>>>>>>>>>>>>>>");
-    if (isGuest && !email) {
-      alert("Please enter an email for guest checkout.");
-      return;
-    }
+//   const handleCheckout = async (isGuest) => {
+//     console.log("BLAMMO: HERE>>>>>>>>>>>>>>>>>>>>>>>>");
+//     if (isGuest && !email) {
+//       alert("Please enter an email for guest checkout.");
+//       return;
+//     }
 
-    try {
-      const endpoint = isGuest ? `${url}/orders/guest/` : `${url}/orders/`;
-      const requestData = {
-        cart: cart.map((item) => ({
-          product_id: item.id,
-          quantity: item.quantity,
-          name: item.name,
-          price: item.price,
-        })),
-        total_price: totalPrice,
-      };
-      console.log("cart data: ", requestData);
+//     try {
+//       const endpoint = isGuest ? `${url}/orders/guest/` : `${url}/orders/`;
+//       const requestData = {
+//         cart: cart.map((item) => ({
+//           product_id: item.id,
+//           quantity: item.quantity,
+//           name: item.name,
+//           price: item.price,
+//         })),
+//         total_price: totalPrice,
+//       };
+//       console.log("cart data: ", requestData);
 
-      if (isGuest) {
-        requestData.email = email;
-      }
+//       if (isGuest) {
+//         requestData.email = email;
+//       }
 
-      const headers = isGuest
-        ? {}
-        : {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          };
+//       const headers = isGuest
+//         ? {}
+//         : {
+//             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+//           };
 
-      //   const response = await axiosInstance.post(endpoint, requestData, {
-      //     headers,
-      //   });
-      const response = await axios({
-        method: "post",
-        url: endpoint,
-        data: requestData,
-        headers: headers,
-      });
-      // Handle successful checkout (e.g., redirect to order confirmation page)
-      console.log("Order placed successfully", response.data);
-      //   navigate(
-      //     "/confirmation?payment_intent=" +
-      //       response.data.payment_intent +
-      //       "&payment_intent_client_secret=" +
-      //       response.data.payment_intent_client_secret +
-      //       "&redirect_status=" +
-      //       response.data.status
-      //   );
-    } catch (error) {
-      console.error("Error placing order:", error);
-    }
-  };
+    
+//       const response = await axios({
+//         method: "post",
+//         url: endpoint,
+//         data: requestData,
+//         headers: headers,
+//       });
+//       // Handle successful checkout (e.g., redirect to order confirmation page)
+//       console.log("Order placed successfully", response.data);
+//         navigate(
+//           "/confirmation?payment_intent=" +
+//             response.data.payment_intent +
+//             "&payment_intent_client_secret=" +
+//             response.data.payment_intent_client_secret +
+//             "&redirect_status=" +
+//             response.data.status
+//         );
+//     } catch (error) {
+//       console.error("Error placing order:", error);
+//     }
+//   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log("BLAMMO: CART PAGE: HANDLE SUBMIT");
-    handleCheckout(false);
-  };
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
+//     console.log("BLAMMO: CART PAGE: HANDLE SUBMIT");
+//     handleCheckout(false);
+//   };
 
   if (loading) {
     return <div>Loading...</div>;
