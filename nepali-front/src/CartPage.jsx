@@ -97,7 +97,7 @@ export const CartPage = () => {
 
             const response = await axiosInstance.post(`${url}/orders/`, requestData, { headers });
             console.log('Order placed successfully', response.data);
-            navigate(`/confirmation?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}&redirect_status=${paymentIntent.status}`);
+            navigate('/confirmation');
         } catch (error) {
             console.error('Error placing order:', error);
         }
