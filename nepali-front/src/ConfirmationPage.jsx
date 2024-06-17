@@ -1,34 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { stripePromise } from './StripeProvider';
 
 const ConfirmationPage = () => {
     const location = useLocation();
     const [paymentIntentId, setPaymentIntentId] = useState(null);
     const [status, setStatus] = useState(null);
+    const [ messageBody, setMessageBody] = useState('');
 
     useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        setPaymentIntentId(queryParams.get('payment_intent'));
-        setStatus(queryParams.get('redirect_status'));
-    }, [location.search]);
+        if (!stripePromise) return;
 
-    useEffect(() => {
-        const confirmOrder = async () => {
-            if (status === 'succeeded' && paymentIntentId) {
-                try {
-                    const response = await axios.post('/orders/confirm/', {
-                        payment_intent_id: paymentIntentId,
-                    });
-                    console.log('Order confirmed:', response.data);
-                } catch (error) {
-                    console.error('Error confirming order:', error);
-                }
+        stripePromise.then(async (stripe) => {
+            const url = new URL(window.location);
+            const clientSecret = url.searchParams.get('payment_intent_client_secret');
+            const { error, paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+
+            if (error) {
+                console.error('error: ', error)
             }
-        };
 
-        confirmOrder();
-    }, [paymentIntentId, status]);
+            else if (paymentIntent) {
+                console.log('payment: ', paymentIntent);
+            }
+            // setMessageBody(error ? `>{error.message}` : (
+            //     console.log('error message')
+            // ))
+        })
+    }, [stripePromise])
+    
+    
+        //     const queryParams = new URLSearchParams(location.search);
+    //     setPaymentIntentId(queryParams.get('payment_intent'));
+    //     setStatus(queryParams.get('redirect_status'));
+    // }, [location.search]);
+
+    // useEffect(() => {
+    //     const confirmOrder = async () => {
+    //         if (status === 'succeeded' && paymentIntentId) {
+    //             try {
+    //                 const response = await axios.post('/orders/get/', {
+    //                     payment_intent_id: paymentIntentId,
+    //                 });
+    //                 console.log('Order confirmed:', response.data);
+    //             } catch (error) {
+    //                 console.error('Error confirming order:', error);
+    //             }
+    //         }
+    //     };
+
+    //     confirmOrder();
+    // }, [paymentIntentId, status]);
 
     return (
         <div>
