@@ -1,50 +1,53 @@
+import React, { useState } from "react";
+import {
+  useStripe,
+  useElements,
+  PaymentElement,
+  AddressElement,
+} from "@stripe/react-stripe-js";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { url } from "./api";
 
-import React, { useEffect, useState } from 'react';
-import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
-import { useNavigate } from 'react-router-dom';
-
-const CheckoutForm = ({ handleCheckout }) => {
+const CheckoutForm = ({ amount }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
+  console.log("CHECKOUT FORM: ");
 
-  useEffect(() => {
-    console.log('checkout form rendered');
-  }, []);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async () => {
+    console.log("BLAMMO: HANDLE SUBMIT");
 
     if (!stripe || !elements) {
-      console.log('stripe or elements')
-      return;
+      return
     }
 
-    console.log('submitting payment...')
-
-    const { error, paymentIntent } = await stripe.confirmPayment({
+    const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: window.location.origin + '/confirmation',
+        return_url: window.location.origin + "/confirmation",
       },
-    });
+    })
 
-    if (error) {
+    if (error.type === 'card_error' || error.type === 'validation_error') {
       setErrorMessage(error.message);
     } else {
-      console.log('payment successful, calling handle checkout');
-      await handleCheckout(paymentIntent);
-      navigate(`/confirmation?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}&redirect_status=${paymentIntent.status}`);
+      setErrorMessage('An unexpected error occurred.')
     }
+
   };
 
   return (
-    <form id='pay' onSubmit={handleSubmit}>
+    <div>
+      <AddressElement 
+      options={{mode: 'shipping' }}/>
       <PaymentElement />
-      <button id='pay' type="submit" disabled={!stripe}>Submit</button>
+      <button onClick={() => handleSubmit()} disabled={!stripe}>
+        Submit
+      </button>
       {errorMessage && <div>{errorMessage}</div>}
-    </form>
+    </div>
   );
 };
 

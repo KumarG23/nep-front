@@ -16,6 +16,15 @@ export const CartProvider = ({ children }) => {
     });
 
     const [loading, setLoading] = useState(true);
+    const [totalPrice, setTotalPrice] = useState(0);
+
+        const calculateTotalPrice = (cartItems) => {
+            const total = cartItems.reduce(
+                (sum, item) => sum + item.price * item.quantity,
+                0
+            )
+            setTotalPrice(total);
+        }
 
 
 
@@ -30,6 +39,7 @@ export const CartProvider = ({ children }) => {
                     quantity: item.quantity
                 }));
                 setCart(formattedCart);
+                calculateTotalPrice(formattedCart);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching cart:', error);
@@ -40,6 +50,9 @@ export const CartProvider = ({ children }) => {
         if (!savedCart) {
             fetchCart();
         } else {
+            const parsedCart = JSON.parse(savedCart);
+            setCart(parsedCart);
+            calculateTotalPrice(parsedCart);
             setLoading(false);
         }
     }, []);
@@ -49,7 +62,10 @@ export const CartProvider = ({ children }) => {
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart));
+        calculateTotalPrice(cart);
     }, [cart]);
+
+ 
 
     const addToCart = async (productId, productName, productPrice, quantity = 1) => {
         try {
@@ -91,7 +107,7 @@ export const CartProvider = ({ children }) => {
     };
 
     return (
-        <CartContext.Provider value={{ cart, setCart, loading, addToCart }}>
+        <CartContext.Provider value={{ cart, setCart, loading, addToCart, totalPrice }}>
             {children}
         </CartContext.Provider>
     );

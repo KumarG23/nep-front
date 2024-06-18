@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const url = 'https://nep-back.fly.dev';
-// 'http://127.0.0.1:8000'
+// export const url = 'https://nep-back.fly.dev';
+export const url = 'http://127.0.0.1:8000'
 export const createUser = ({ username, email, password, firstName, lastName }) => {
     axios({
         method: 'post',
@@ -67,4 +67,22 @@ export const getProducts = async () => {
         throw error;
     }
 }
+
+export const getUserOrders = async ({ auth }) => {
+    try {
+        const response = await axios({
+            method: 'get',
+            url: `${url}/orders/get/`,
+            headers: {
+                Authorization: `Bearer ${auth.accessToken}`
+            },
+        });
+        console.log('get user orders: ', response);
+        return response.data;
+    }
+    catch (error) {
+        console.error('error getting user orders: ', error);
+        throw error;
+    }
+};
 
