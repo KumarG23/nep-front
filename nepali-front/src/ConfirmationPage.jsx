@@ -139,3 +139,5 @@ const ConfirmationPage = ({ cart, totalPrice, loading }) => {
 export default ConfirmationPage;
 
 
+
+

@@ -4,8 +4,6 @@ import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import theme from './theme.js';
-import axios from 'axios';
-import getCookie from './getCookie.js';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';

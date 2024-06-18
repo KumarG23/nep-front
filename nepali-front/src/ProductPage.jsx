@@ -4,6 +4,7 @@ import { getProducts } from './api';
 import { useNavigate } from 'react-router-dom';
 import { ChakraProvider, Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text, Divider, ButtonGroup, Button } from '@chakra-ui/react';
 import theme from './theme';
+import { url } from './api';
 
 export const ProductPage = () => {
     const { cart, setCart, addToCart } = useContext(CartContext)
@@ -39,7 +40,8 @@ export const ProductPage = () => {
         <Card key={product.id} maxW='sm'>
         <CardBody>
           <Image
-            src={`http://127.0.0.1:8000/${product.image}`}
+            src={`http://127.0.0.1:8000${product.image}`}
+            // https://nep-back.fly.dev
             alt={product.name}
             borderRadius='lg'
           />
