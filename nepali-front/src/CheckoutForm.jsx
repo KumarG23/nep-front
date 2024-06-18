@@ -28,16 +28,13 @@ const CheckoutForm = ({ amount }) => {
       confirmParams: {
         return_url: window.location.origin + "/confirmation",
       },
-      redirect: 'if_required',
-    });
+    })
 
     if (error.type === 'card_error' || error.type === 'validation_error') {
       setErrorMessage(error.message);
     } else {
       setErrorMessage('An unexpected error occurred.')
-    } 
-
-    
+    }
 
   };
 

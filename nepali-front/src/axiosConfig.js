@@ -5,7 +5,7 @@ import getCookie from './getCookie';
 export const url = 'http://127.0.0.1:8000';
 // Create an Axios instance
 const axiosInstance = axios.create({
-    baseURL: 'https://nep-back.fly.dev',
+    baseURL: url,
     headers: {
         'Content-Type': 'application/json',
     }
