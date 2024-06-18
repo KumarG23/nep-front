@@ -78,6 +78,7 @@ export const getUserOrders = async ({ auth }) => {
             },
         });
         console.log('get user orders: ', response);
+        console.log('user order data: ', response.data);
         return response.data;
     }
     catch (error) {
