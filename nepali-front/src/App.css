@@ -137,13 +137,7 @@ p {
   justify-content: space-between;
 }
 
-@media (max-width: 767px) {
-  body {
-    background-size: cover;
-    background-position: center;
-  }
 
-}
 
 .homepage-content {
   flex: 1;
