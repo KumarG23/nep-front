@@ -40,8 +40,9 @@ export const ProductPage = () => {
         <Card key={product.id} maxW='sm'>
         <CardBody>
           <Image
-            src={`http://127.0.0.1:8000${product.image}`}
+            src={`https://nep-back.fly.dev${product.image}`}
             // https://nep-back.fly.dev
+            // http://127.0.0.1:8000
             alt={product.name}
             borderRadius='lg'
           />
