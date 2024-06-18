@@ -1,0 +1,61 @@
+/* Header.css */
+
+#logo {
+  width: 50px; /* Adjust the size as needed */
+}
+
+#title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-left: 10px;
+  color: black; /* Ensure the title color is visible */
+}
+
+.navbar-nav .nav-link {
+  color: white; /* Set font color to white */
+  margin-left: 15px;
+}
+
+.navbar-toggler {
+  border: none; /* Remove border from the hamburger menu */
+  color: #dd0c39; /* Set color to white */
+  outline: none; /* Remove outline */
+}
+
+.navbar-toggler:focus {
+  outline: none; /* Remove outline on focus */
+}
+
+.navbar-collapse {
+  background-color: rgba(0, 0, 0, 0.8); /* Add a dark background to the menu */
+  position: absolute;
+  right: 0;
+  top: 60px; /* Adjust based on your navbar height */
+  width: 200px;
+}
+
+@media (max-width: 767px) {
+  #navcontainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #title {
+    margin-top: 10px;
+  }
+
+  .navbar-collapse {
+    width: 100%;
+    right: 0;
+    top: 100px; /* Adjust based on your navbar height */
+  }
+}
+
+@media (min-width: 768px) {
+  .navbar-nav {
+    flex-direction: row;
+  }
+}
+
+
+

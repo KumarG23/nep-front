@@ -128,12 +128,21 @@ p {
 .homepage {
   background-image: url('./assets/Facetune_11-06-2024-20-52-49.jpeg');
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+@media (max-width: 767px) {
+  body {
+    background-size: cover;
+    background-position: center;
+  }
+
 }
 
 .homepage-content {
@@ -187,33 +196,3 @@ li {
   padding-bottom: 3%;
 }
 
-
-/* Header.css */
-
-#logo {
-  width: 50px; /* Adjust the size as needed */
-  cursor: pointer;
-}
-
-#title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-left: 10px;
-}
-
-@media (max-width: 768px) {
-  #navcontainer {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  #title {
-    margin-top: 10px;
-  }
-}
-
-@media (min-width: 768px) {
-  #navbar .navbar-nav {
-    flex-direction: row;
-  }
-}
