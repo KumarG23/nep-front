@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { getUser } from './api'
+import { getUser, getUserOrders } from './api'
+
 
 export const Profile = () => {
   const [firstName, setFirstName] = useState('')
@@ -8,7 +9,7 @@ export const Profile = () => {
   useEffect(() => {
     if (accessToken) {
       handleGetUser();
-      handleGetOrders();
+      handleGetUserOrders();
 
     }
   })
@@ -21,6 +22,18 @@ export const Profile = () => {
     } catch (error) {
       console.error('Error getting user: ', error);
     }
+  }
+
+  const handleGetUserOrders = async () => {
+    try {
+      const userData = await getUserOrders({ auth: { accessToken }});
+      console.log('User order Data: ', userData);
+    }
+    catch (error) {
+      console.error('Error getting user Orders: ', error);
+    }
+    
+
   }
 
   console.log('First name: ', firstName);

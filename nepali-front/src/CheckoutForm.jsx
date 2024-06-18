@@ -3,6 +3,7 @@ import {
   useStripe,
   useElements,
   PaymentElement,
+  AddressElement,
 } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -26,19 +27,24 @@ const CheckoutForm = ({ amount }) => {
       elements,
       confirmParams: {
         return_url: window.location.origin + "/confirmation",
-      }
-    })
+      },
+      redirect: 'if_required',
+    });
 
     if (error.type === 'card_error' || error.type === 'validation_error') {
       setErrorMessage(error.message);
     } else {
       setErrorMessage('An unexpected error occurred.')
-    }
+    } 
+
+    
 
   };
 
   return (
     <div>
+      <AddressElement 
+      options={{mode: 'shipping' }}/>
       <PaymentElement />
       <button onClick={() => handleSubmit()} disabled={!stripe}>
         Submit

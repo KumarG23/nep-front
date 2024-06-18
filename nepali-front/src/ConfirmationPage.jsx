@@ -9,6 +9,7 @@ const ConfirmationPage = ({ cart, totalPrice, loading }) => {
     const [paymentIntentId, setPaymentIntentId] = useState(null);
     const [status, setStatus] = useState(null);
     const [ messageBody, setMessageBody] = useState('');
+    const [shippingAddress, setShippingAddress] = useState(null);
 
 
     useEffect(() => {
@@ -44,6 +45,7 @@ const ConfirmationPage = ({ cart, totalPrice, loading }) => {
         
         try {
             const cartData = JSON.parse(localStorage.getItem('cart'));
+            const shippingAddress = JSON.parse(localStorage.getItem('shipping_address'));
             const totalPrice = calculateTotalPrice(cartData); // Ensure this function calculates correctly
             console.log('cart data: ', cartData);
             console.log('total price: ', totalPrice);
@@ -56,6 +58,8 @@ const ConfirmationPage = ({ cart, totalPrice, loading }) => {
                     price: product.price,
                 })),
                 total_price: totalPrice,
+                payment_intent_id: paymentIntentId,
+                shipping_address: shippingAddress,
             };
             console.log("request data: ", requestData);
     
@@ -121,7 +125,6 @@ const ConfirmationPage = ({ cart, totalPrice, loading }) => {
                     <p>Thank you for your purchase!</p>
                     <p>Payment Intent ID: {paymentIntentId}</p>
                     <p>Your payment was successful.</p>
-                    <p></p>
                 </div>
             ) : (
                 <div>

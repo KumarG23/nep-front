@@ -68,3 +68,21 @@ export const getProducts = async () => {
     }
 }
 
+export const getUserOrders = async ({ auth }) => {
+    try {
+        const response = await axios({
+            method: 'get',
+            url: `${url}/orders/get/`,
+            headers: {
+                Authorization: `Bearer ${auth.accessToken}`
+            },
+        });
+        console.log('get user orders: ', response);
+        return response.data;
+    }
+    catch (error) {
+        console.error('error getting user orders: ', error);
+        throw error;
+    }
+};
+
