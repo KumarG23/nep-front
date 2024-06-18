@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa'; // Add react-icons for the hamburger icon
 import Logo from './assets/logo.webp';
-import './Header.css'; // Import custom CSS for additional styling
+
 
 const Header = () => {
   return (
