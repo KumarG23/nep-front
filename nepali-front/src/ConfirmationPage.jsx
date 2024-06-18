@@ -72,6 +72,8 @@ const ConfirmationPage = ({ cart, totalPrice, loading }) => {
                 }
             });
             console.log('order placed successfully', response.data);
+
+            localStorage.removeItem('cart');
             
         } catch (error) {
             console.error('error placing order', error);
