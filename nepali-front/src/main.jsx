@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import theme from './theme.js';
+import { getUser } from './api.js';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -27,6 +28,7 @@ import CheckoutPage from './CheckoutPage.jsx';
 import CartProvider from './CartContext.jsx';
 import OrderConfirmation from './ConfirmationPage.jsx';
 import ConfirmationPage from './ConfirmationPage.jsx';
+import { AdminPage } from '../AdminPage.jsx';
 
 
 function Layout() {
@@ -92,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: '/confirmation',
         element: <ConfirmationPage />
+      },
+      {
+        path: '/admin',
+        element: <AdminPage />
       }
     ],
   },
@@ -99,14 +105,53 @@ const router = createBrowserRouter([
 
 const AuthContextProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || (''));
+  const [user, setUser] = useState(null);
+   const [loading, setLoading] = useState(true);
+
+   useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (accessToken) {
+        try {
+          const userData = await getUser({ auth: { accessToken } });
+          setUser(userData.user);
+          console.log('Fetched user data:', userData.user);
+        } catch (error) {
+          console.error('Failed to fetch user:', error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [accessToken]);
+
+  const login = async (token) => {
+    setAccessToken(token);
+    localStorage.setItem('accessToken', token);
+    try {
+      const userData = await getUser({ auth: { accessToken: token } });
+      setUser(userData.user);
+    } catch (error) {
+      console.error('Failed to fetch user after login:', error);
+    }
+  };
+
+
 
   const auth = {
     accessToken,
     setAccessToken,
+    user,
+    setUser,
+    loading,
+    login,
   }
 
   return(
-    <AuthContext.Provider value={{ auth: auth }} >
+    <AuthContext.Provider value={ auth } >
       {children}
     </AuthContext.Provider>
   )

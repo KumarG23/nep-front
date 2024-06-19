@@ -5,7 +5,7 @@ import { AuthContext } from './AuthContext';
 import { getToken } from './api';
 
 function Login() {
-  const { accessToken, setAccessToken } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -14,7 +14,7 @@ function Login() {
   const submit = async () => {
     try {
       const token = await getToken({ username, password });
-      localStorage.setItem('accessToken', token);
+      await login(token);
       navigate('/product');
     } catch (error) {
       setErrorMessage('Invalid username or password');
