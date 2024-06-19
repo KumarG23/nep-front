@@ -94,6 +94,10 @@ html, body {
 
 #title {
   font-size: 3.5rem;
+  background: -webkit-linear-gradient(#003594, #dd0c39);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: transparent;
 }
 
 #logcontainer {
@@ -189,4 +193,50 @@ li {
   text-align: center;
   padding-bottom: 3%;
 }
+
+footer {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background-color: #f1f1f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+footer img.flag {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 3.5%; 
+  height: auto;
+  opacity: 0.8; 
+}
+
+#linked {
+  margin-left: 10px;
+  color: #003594;
+}
+
+#linked:hover {
+  color: #dd0c39;
+  transform: translateY(-5px);
+}
+
+#threads {
+  margin-right: 5px;
+  background: -webkit-linear-gradient(#003594, #dd0c39);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: transparent;
+}
+
+@media (max-width: 767px) {
+  footer {
+    flex-direction: column;
+    height: auto;
+    padding: 10px 0;
+  }
+}
+
 
