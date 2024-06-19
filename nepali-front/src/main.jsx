@@ -1,48 +1,53 @@
-import React, { createContext, useState, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import theme from './theme.js';
-import { getUser } from './api.js';
+import React, { createContext, useState, useEffect } from "react";
+import ReactDOM from "react-dom/client";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import theme from "./theme.js";
+import { getUser } from "./api.js";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+import "semantic-ui-css/semantic.min.css";
+import { ChakraProvider } from "@chakra-ui/react";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'semantic-ui-css/semantic.min.css'
-import { ChakraProvider } from '@chakra-ui/react'
-
-import App from './App.jsx'
-import './index.css'
-import SignUp from './SignUp.jsx';
-import Login from './Login.jsx';
-import { Profile } from './Profile.jsx';
-import { ProductPage } from './ProductPage.jsx';
-import { CartPage } from './CartPage.jsx';
-import { AuthContext } from './AuthContext.js';
-import { CartContext } from './CartContext.jsx';
-import Header from './Header.jsx';
-import { Footer } from './Footer.jsx';
-import ErrorPage from './ErrorPage.jsx';
-import { ProductDetails } from './ProductDetails.jsx';
-import CheckoutPage from './CheckoutPage.jsx';
-import CartProvider from './CartContext.jsx';
-import OrderConfirmation from './ConfirmationPage.jsx';
-import ConfirmationPage from './ConfirmationPage.jsx';
-import { AdminPage } from '../AdminPage.jsx';
-
+import App from "./App.jsx";
+import "./index.css";
+import SignUp from "./SignUp.jsx";
+import Login from "./Login.jsx";
+import { Profile } from "./Profile.jsx";
+import { ProductPage } from "./ProductPage.jsx";
+import { CartPage } from "./CartPage.jsx";
+import { AuthContext } from "./AuthContext.js";
+import { CartContext } from "./CartContext.jsx";
+import Header from "./Header.jsx";
+import { Footer } from "./Footer.jsx";
+import ErrorPage from "./ErrorPage.jsx";
+import { ProductDetails } from "./ProductDetails.jsx";
+import CheckoutPage from "./CheckoutPage.jsx";
+import CartProvider from "./CartContext.jsx";
+import OrderConfirmation from "./ConfirmationPage.jsx";
+import ConfirmationPage from "./ConfirmationPage.jsx";
+import { AdminPage } from "./AdminPage.jsx";
 
 function Layout() {
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
+  const isHomePage = location.pathname === "/";
   return (
     <>
       <Header />
-      <div id="page-content" className={isHomePage ? 'homepage' : ''}>
-        <div className={isHomePage ? 'homepage-content' : ''}>
+      <div id="page-content" className={isHomePage ? "homepage" : ""}>
+        <div className={isHomePage ? "homepage-content" : ""}>
           {isHomePage && (
             <div className="homepage-text">
               <h1 className="homepage-title">Welcome to Nepali Threads</h1>
-              <p className="homepage-subtitle">Explore our unique collection of Nepalese clothing.</p>
+              <p className="homepage-subtitle">
+                Explore our unique collection of Nepalese clothing.
+              </p>
             </div>
           )}
           <Outlet />
@@ -60,63 +65,65 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: '/',
+        path: "/",
         element: <App />,
       },
       {
-        path: '/login',
+        path: "/login",
         element: <Login />,
       },
       {
-        path: '/signup',
+        path: "/signup",
         element: <SignUp />,
       },
       {
-        path: '/profile',
+        path: "/profile",
         element: <Profile />,
       },
       {
-        path: '/cart',
+        path: "/cart",
         element: <CartPage />,
       },
       {
-        path: '/product',
-        element: <ProductPage />
+        path: "/product",
+        element: <ProductPage />,
       },
       {
-      path: 'product-details',
-      element: <ProductDetails />
+        path: "product-details",
+        element: <ProductDetails />,
       },
       {
-        path: 'checkout',
-        element: <CheckoutPage />
+        path: "checkout",
+        element: <CheckoutPage />,
       },
       {
-        path: '/confirmation',
-        element: <ConfirmationPage />
+        path: "/confirmation",
+        element: <ConfirmationPage />,
       },
       {
-        path: '/admin',
-        element: <AdminPage />
-      }
+        path: "/admin",
+        element: <AdminPage />,
+      },
     ],
   },
 ]);
 
 const AuthContextProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || (''));
+  const [accessToken, setAccessToken] = useState(
+    localStorage.getItem("accessToken") || ""
+  );
   const [user, setUser] = useState(null);
-   const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchUserProfile = async () => {
       if (accessToken) {
         try {
           const userData = await getUser({ auth: { accessToken } });
           setUser(userData.user);
-          console.log('Fetched user data:', userData.user);
+          console.log("Fetched user data:", userData.user);
         } catch (error) {
-          console.error('Failed to fetch user:', error);
+          console.error("Failed to fetch user:", error);
         } finally {
           setLoading(false);
         }
@@ -130,16 +137,14 @@ const AuthContextProvider = ({ children }) => {
 
   const login = async (token) => {
     setAccessToken(token);
-    localStorage.setItem('accessToken', token);
+    localStorage.setItem("accessToken", token);
     try {
       const userData = await getUser({ auth: { accessToken: token } });
       setUser(userData.user);
     } catch (error) {
-      console.error('Failed to fetch user after login:', error);
+      console.error("Failed to fetch user after login:", error);
     }
   };
-
-
 
   const auth = {
     accessToken,
@@ -148,25 +153,17 @@ const AuthContextProvider = ({ children }) => {
     setUser,
     loading,
     login,
-  }
+  };
 
-  return(
-    <AuthContext.Provider value={ auth } >
-      {children}
-    </AuthContext.Provider>
-  )
-}
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+};
 
-
-
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-<AuthContextProvider>
-  <CartProvider>
-    <ChakraProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ChakraProvider>
-  </CartProvider>
-</AuthContextProvider>
-  
-)
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <AuthContextProvider>
+    <CartProvider>
+      <ChakraProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ChakraProvider>
+    </CartProvider>
+  </AuthContextProvider>
+);
