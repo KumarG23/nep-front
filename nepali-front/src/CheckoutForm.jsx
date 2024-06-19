@@ -8,6 +8,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { url } from "./api";
+import { Box, Button } from "@chakra-ui/react";
 
 const CheckoutForm = ({ amount }) => {
   const stripe = useStripe();
@@ -43,9 +44,11 @@ const CheckoutForm = ({ amount }) => {
       <AddressElement 
       options={{mode: 'shipping' }}/>
       <PaymentElement />
-      <button onClick={() => handleSubmit()} disabled={!stripe}>
-        Submit
-      </button>
+      <Box mt={4} mb={4}>
+        <Button onClick={() => handleSubmit()} disabled={!stripe}>
+          Pay Now
+        </Button>
+      </Box>
       {errorMessage && <div>{errorMessage}</div>}
     </div>
   );

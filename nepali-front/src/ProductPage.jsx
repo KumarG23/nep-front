@@ -32,6 +32,8 @@ export const ProductPage = () => {
   }
 
 
+
+
   
 
   return (
@@ -40,11 +42,14 @@ export const ProductPage = () => {
         <Card key={product.id} maxW='sm'>
         <CardBody>
           <Image
-            src={`https://nep-back.fly.dev${product.image}`}
+            src={`${url}${product.image}`}
             // https://nep-back.fly.dev
             // http://127.0.0.1:8000
             alt={product.name}
             borderRadius='lg'
+            width='100%'
+            height='80%'
+            objectFit='cover'
           />
           <Stack mt='6' spacing='3'>
             <Heading size='md'>{product.name}</Heading>
@@ -56,7 +61,6 @@ export const ProductPage = () => {
             </Text>
           </Stack>
         </CardBody>
-        <Divider />
         <CardFooter>
             <Button variant='ghost' colorScheme='blue' onClick={() => handleAddToCart(product.id)}>
               Add to cart
