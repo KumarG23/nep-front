@@ -155,6 +155,12 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const logout = () => {
+    setAccessToken('');
+    setUser(null);
+    localStorage.removeItem('accessToken');
+  }
+
   const auth = {
     accessToken,
     setAccessToken,
@@ -162,6 +168,7 @@ const AuthContextProvider = ({ children }) => {
     setUser,
     loading,
     login,
+    logout,
   };
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;

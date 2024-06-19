@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { getUser, getUserOrders } from './api';
+import { Button } from 'react-bootstrap';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
+import { format, parseISO } from 'date-fns';
 
 export const Profile = () => {
   const [firstName, setFirstName] = useState('');
   const [orders, setOrders] = useState([]);
-  const accessToken = localStorage.getItem('accessToken');
+  const {accessToken, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (accessToken) {
@@ -33,18 +38,32 @@ export const Profile = () => {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const formatDate = (dateString) => {
+    const date = parseISO(dateString);
+    const options = { timeZone: 'America/New_York', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  };
+
+ 
+
   console.log('First name: ', firstName);
   console.log('orders: ', orders);
 
   return (
     <div>
       <h1>{firstName}'s Orders</h1>
+      <Button className='m-2' onClick={handleLogout}>Logout</Button>
       <ul>
         {orders.map((order) => (
           <li key={order.id}>
             <h2>Order ID: {order.id}</h2>
             <p>Total Price: {order.total_price}</p>
-            <p>Created At: {order.created_at}</p>
+            <p>Order Placed: {formatDate(order.created_at)}</p>
             {/* <p>Payment Intent ID: {order.payment_intent_id}</p> */}
             <h3>Order Items:</h3>
             <ul>
