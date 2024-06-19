@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ component }) => {
   const { accessToken } = useContext(AuthContext);
 
-  return accessToken ? <Outlet /> : <Navigate to="/login" />;
+  return accessToken ? component : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;
+
+
