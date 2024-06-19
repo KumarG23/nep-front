@@ -7,7 +7,7 @@ import {
   useLocation,
   Navigate
 } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import theme from "./theme.js";
 import { getUser } from "./api.js";
@@ -60,7 +60,10 @@ function Layout() {
         </div>
       </div>
       <Footer />
-      <ToastContainer />
+      <ToastContainer 
+      position="top-left"
+      closeOnClick
+      transition={Bounce}/>
     </>
   );
 }
