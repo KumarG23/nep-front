@@ -5,6 +5,7 @@ import {
   RouterProvider,
   Outlet,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -33,6 +34,9 @@ import CartProvider from "./CartContext.jsx";
 import OrderConfirmation from "./ConfirmationPage.jsx";
 import ConfirmationPage from "./ConfirmationPage.jsx";
 import { AdminPage } from "./AdminPage.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
+
+
 
 function Layout() {
   const location = useLocation();
@@ -78,11 +82,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <Profile />,
+        element:(
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        )
       },
       {
         path: "/cart",
-        element: <CartPage />,
+        element: (
+          <ProtectedRoute>
+            <CartPage />
+          </ProtectedRoute>
+        )
       },
       {
         path: "/product",
@@ -102,7 +114,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <AdminPage />,
+        element: (
+          <ProtectedRoute>
+            <AdminPage />
+          </ProtectedRoute>
+        )
       },
     ],
   },
