@@ -21,7 +21,7 @@ const CheckoutForm = ({ amount }) => {
         requestPayerName: true,
         requestPayerEmail: true,
         // Enable card payment method
-        requestPaymentMethod: ['card']
+        requestPaymentMethod: ['card', 'google_pay']
       });
 
       pr.canMakePayment().then((result) => {
