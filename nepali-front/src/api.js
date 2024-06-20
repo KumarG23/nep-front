@@ -88,3 +88,57 @@ export const getUserOrders = async ({ auth }) => {
     }
 };
 
+
+export const submitReview = async (reviewData, accessToken) => {
+    try {
+        const response = await axios.post(`${url}/reviews/create/`, reviewData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        console.log('Review: ', response);
+        return response.data;
+    }
+    catch (error) {
+        if (error.response) {
+            // Server responded with a status other than 200 range
+            console.error('Error response data:', error.response.data);
+            console.error('Error response status:', error.response.status);
+            console.error('Error response headers:', error.response.headers);
+        } else if (error.request) {
+            // Request was made but no response was received
+            console.error('Error request:', error.request);
+        } else {
+            // Something happened in setting up the request that triggered an error
+            console.error('Error message:', error.message);
+        }
+        console.error('Error config:', error.config);
+        throw error;
+    }
+};
+
+
+export const getProductById = async (id) => {
+    try {
+      const response = await axios({
+        url: `${url}/products/${id}/`,
+        method: 'get',
+      });
+      console.log('getProductById: ', response);
+      return response.data;
+    } catch (error) {
+      console.error('error getting product by id: ', error);
+      throw error;
+    }
+  };
+
+  export const getReviewsByProductId = async (productId) => {
+    try {
+      const response = await axios.get(`${url}/reviews/?product_id=${productId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      throw error;
+    }
+  };
+

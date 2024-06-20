@@ -5,11 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { ChakraProvider, Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text, Divider, ButtonGroup, Button } from '@chakra-ui/react';
 import theme from './theme';
 import { url } from './api';
+import RatingReview from './Rating';
 
 export const ProductPage = () => {
     const { cart, setCart, addToCart } = useContext(CartContext)
   const [products, setProducts] = useState([]);
-  const navigate = useNavigate;
+  const navigate = useNavigate();
+  const [ratings, setRatings] = useState({});
 
   const handleGetProducts = async () => {
     try {
@@ -31,6 +33,13 @@ export const ProductPage = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   }
 
+  // const handleSetRating = (productId, rating) => {
+  //   setRatings(prevRatings => ({
+  //     ...prevRatings,
+  //     [productId]: rating
+  //   }));
+  // };
+
 
 
 
@@ -50,6 +59,8 @@ export const ProductPage = () => {
             width='100%'
             height='80%'
             objectFit='cover'
+            onClick={() => navigate(`/product/${product.id}`)}
+            style={{ cursor: 'pointer' }}
           />
           <Stack mt='6' spacing='3'>
             <Heading size='md'>{product.name}</Heading>
@@ -66,6 +77,9 @@ export const ProductPage = () => {
               Add to cart
             </Button>
         </CardFooter>
+        {/* <RatingReview
+          productId={product.id}
+          rating={ratings[product.id]} setRating={handleSetRating} /> */}
       </Card>
       ))}
     </div>
