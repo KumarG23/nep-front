@@ -240,3 +240,15 @@ footer img.flag {
 }
 
 
+#email {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+  white-space: normal;
+  width: 100%; /* Ensure the container takes full width */
+}
+
+#email input {
+  width: 100%; /* Ensure the input field takes full width */
+  box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
+}
