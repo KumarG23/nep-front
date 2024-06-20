@@ -1,4 +1,3 @@
-// ProductDetails.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { url, getProductById, getReviewsByProductId, submitReview } from './api';
@@ -12,10 +11,10 @@ export const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
-  const [rating, setRating] = useState(0);
+  const [ratings, setRatings] = useState({});
   const [comment, setComment] = useState('');
-  const { auth, accessToken } = useContext(AuthContext);
-  const [error, setError] = useState('');
+  const { accessToken } = useContext(AuthContext);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -41,26 +40,35 @@ export const ProductDetails = () => {
   }, [id]);
 
   const handleSetRating = (productId, rating) => {
-    setRating(rating);
+    setRatings((prevRatings) => ({
+      ...prevRatings,
+      [productId]: rating,
+    }));
     console.log(`Rating set for product ${productId}: ${rating}`);
   };
 
   const handleSubmitReview = async () => {
     if (!accessToken) {
       setError('You need to login to submit a review');
+      console.log('User not logged in');
       return;
     }
     try {
       const reviewData = {
         product_id: id,
-        rating,
+        rating: ratings[id] || 0,
         comment,
       };
       await submitReview(reviewData, accessToken);
       setComment('');
-      setRating(0);
+      setRatings((prevRatings) => ({
+        ...prevRatings,
+        [id]: 0,
+      }));
+      console.log('Review submitted', reviewData);
       const reviewsData = await getReviewsByProductId(id);
       setReviews(reviewsData);
+      setError(null);
     } catch (error) {
       console.error('Error creating review:', error);
       setError('Failed to submit review');
@@ -89,14 +97,19 @@ export const ProductDetails = () => {
           <Text>{product.description}</Text>
           <Text color="blue.600" fontSize="2xl">{product.price}</Text>
         </Stack>
-        <RatingReview rating={rating} setRating={handleSetRating} />
-        <Textarea 
-          placeholder="Leave a comment" 
-          value={comment} 
-          onChange={(e) => setComment(e.target.value)} 
+        <RatingReview
+          productId={product.id}
+          rating={ratings[product.id] || 0}
+          setRating={handleSetRating}
+        />
+        <Textarea
+          placeholder="Leave a comment"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
           mt="4"
         />
         <Button onClick={handleSubmitReview} mt="4">Submit Review</Button>
+        {error && <Text color="red.500">{error}</Text>}
         <Stack mt="6" spacing="3">
           <Heading size="md">Reviews</Heading>
           {reviews.map((review) => (
@@ -113,6 +126,7 @@ export const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
 
 
 
