@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, Nav, Container, Spinner } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
-import Logo from './assets/logo.webp';
+import Logo from './assets/logo.svg';
 import './Header.css';
 import { AuthContext } from './AuthContext'; // Adjust the path if necessary
 

@@ -8,6 +8,8 @@ import { FaFacebook, FaTwitter, FaWhatsapp, FaShareAlt } from 'react-icons/fa';
 import theme from './theme';
 import { url } from './api';
 import RatingReview from './Rating';
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export const ProductPage = () => {
   const { cart, setCart, addToCart } = useContext(CartContext);
