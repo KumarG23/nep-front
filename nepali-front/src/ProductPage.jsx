@@ -3,7 +3,8 @@ import { CartContext } from './CartContext';
 import { getProducts } from './api';
 import { useNavigate } from 'react-router-dom';
 import { ChakraProvider, Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text, Divider, ButtonGroup, Button, Center, Spinner } from '@chakra-ui/react';
-import { FaShareAlt } from 'react-icons/fa'; // Import an icon for the share button
+import { FacebookShareButton, TwitterShareButton, WhatsappShareButton } from 'react-share';
+import { FaFacebook, FaTwitter, FaWhatsapp, FaShareAlt } from 'react-icons/fa';
 import theme from './theme';
 import { url } from './api';
 import RatingReview from './Rating';
@@ -36,19 +37,6 @@ export const ProductPage = () => {
       addToCart(productId, product.name, product.price, 1);
       const updatedCart = [...cart, { id: product.id, name: product.name, price: product.price, quantity: 1 }];
       localStorage.setItem('cart', JSON.stringify(updatedCart));
-    }
-  };
-
-  const handleShare = (product) => {
-    if (navigator.share) {
-      navigator.share({
-        title: product.name,
-        text: product.description,
-        url: `${window.location.origin}/product/${product.id}`
-      })
-      .catch((error) => console.error('Error sharing', error));
-    } else {
-      alert('Sharing is not supported in this browser.');
     }
   };
 
@@ -92,9 +80,16 @@ export const ProductPage = () => {
                 <Button variant='ghost' colorScheme='blue' onClick={() => handleAddToCart(product.id)}>
                   Add to cart
                 </Button>
-                <Button variant='ghost' colorScheme='blue' onClick={() => handleShare(product)}>
-                  <FaShareAlt /> Share
-                </Button>
+                <FacebookShareButton url={`${window.location.origin}/product/${product.id}`} quote={product.description}>
+                  <Button variant='ghost' colorScheme='blue'>
+                    <FaFacebook /> Share
+                  </Button>
+                </FacebookShareButton>
+                <TwitterShareButton url={`${window.location.origin}/product/${product.id}`} title={product.name}>
+                  <Button variant='ghost' colorScheme='blue'>
+                    <FaTwitter /> Share
+                  </Button>
+                </TwitterShareButton>
               </ButtonGroup>
             </CardFooter>
             {/* <RatingReview productId={product.id} rating={ratings[product.id]} setRating={handleSetRating} /> */}
@@ -104,5 +99,6 @@ export const ProductPage = () => {
     </ChakraProvider>
   );
 };
+
 
 
