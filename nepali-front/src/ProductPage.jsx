@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { CartContext } from './CartContext';
 import { getProducts } from './api';
 import { useNavigate } from 'react-router-dom';
-import { ChakraProvider, Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text, Divider, ButtonGroup, Button } from '@chakra-ui/react';
+import { ChakraProvider, Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text, Divider, ButtonGroup, Button, Center, Spinner } from '@chakra-ui/react';
 import theme from './theme';
 import { url } from './api';
 import RatingReview from './Rating';
@@ -12,12 +12,14 @@ export const ProductPage = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
   const [ratings, setRatings] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const handleGetProducts = async () => {
     try {
       const productData = await getProducts();
       console.log('Products: ', productData);
       setProducts(productData);
+      setLoading(false);
     } catch (error) {
       console.error('Error getting products: ', error);
     }
@@ -41,6 +43,13 @@ export const ProductPage = () => {
   // };
 
 
+  if (loading) {
+    return (
+      <Center height="100vh">
+        <Spinner size="xl" />
+      </Center>
+    );
+  }
 
 
   
