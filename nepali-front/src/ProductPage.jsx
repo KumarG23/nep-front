@@ -51,6 +51,7 @@ export const ProductPage = () => {
         <Card key={product.id} maxW='sm'>
         <CardBody>
           <Image
+            loading='lazy'
             src={`${url}${product.image}`}
             // https://nep-back.fly.dev
             // http://127.0.0.1:8000
