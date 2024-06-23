@@ -2,20 +2,16 @@ import { useState, useEffect, useContext } from 'react';
 import { CartContext } from './CartContext';
 import { getProducts } from './api';
 import { useNavigate } from 'react-router-dom';
-import { ChakraProvider, Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text, Divider, ButtonGroup, Button, Center, Spinner } from '@chakra-ui/react';
-import { FacebookShareButton, TwitterShareButton, WhatsappShareButton } from 'react-share';
-import { FaFacebook, FaTwitter, FaWhatsapp, FaShareAlt } from 'react-icons/fa';
+import { ChakraProvider, Card, CardBody, CardFooter, Image, Stack, Heading, Text, ButtonGroup, Button, Center, Spinner, IconButton } from '@chakra-ui/react';
+import { FacebookShareButton, TwitterShareButton } from 'react-share';
+import { FaFacebook, FaTwitter } from 'react-icons/fa';
 import theme from './theme';
 import { url } from './api';
-import RatingReview from './Rating';
-import { Carousel } from 'react-responsive-carousel';
-import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export const ProductPage = () => {
   const { cart, setCart, addToCart } = useContext(CartContext);
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
-  const [ratings, setRatings] = useState({});
   const [loading, setLoading] = useState(true); // Add loading state
 
   const handleGetProducts = async () => {
@@ -59,7 +55,6 @@ export const ProductPage = () => {
               <Image
                 loading='lazy'
                 decoding='async'
-                fetchPriority='high'
                 src={`${url}${product.image}`}
                 alt={product.name}
                 borderRadius='lg'
@@ -82,25 +77,27 @@ export const ProductPage = () => {
                 <Button variant='ghost' colorScheme='blue' onClick={() => handleAddToCart(product.id)}>
                   Add to cart
                 </Button>
-                <FacebookShareButton url={`${window.location.origin}/product/${product.id}`} quote={product.description}>
-                  <Button variant='ghost' colorScheme='blue'>
-                    <FaFacebook /> Share
-                  </Button>
+                <FacebookShareButton url={`${window.location.origin}/product/${product.id}`} quote="Check out this product!">
+                  <div>
+                    <IconButton icon={<FaFacebook />} variant='ghost' colorScheme='blue' aria-label='Share on Facebook' as='div' />
+                  </div>
                 </FacebookShareButton>
                 <TwitterShareButton url={`${window.location.origin}/product/${product.id}`} title={product.name}>
-                  <Button variant='ghost' colorScheme='blue'>
-                    <FaTwitter /> Share
-                  </Button>
+                  <div>
+                    <IconButton icon={<FaTwitter />} variant='ghost' colorScheme='blue' aria-label='Share on Twitter' as='div' />
+                  </div>
                 </TwitterShareButton>
               </ButtonGroup>
             </CardFooter>
-            {/* <RatingReview productId={product.id} rating={ratings[product.id]} setRating={handleSetRating} /> */}
           </Card>
         ))}
       </div>
     </ChakraProvider>
   );
 };
+
+
+
 
 
 
