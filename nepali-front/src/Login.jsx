@@ -32,6 +32,7 @@ function Login() {
             placeholder='Enter username' 
             onChange={e => setUsername(e.target.value)}
             value={username}
+            autoComplete='username'
           />
         </Box>
         <Box>
