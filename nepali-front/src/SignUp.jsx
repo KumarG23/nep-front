@@ -41,7 +41,7 @@ const SignUp = () => {
             placeholder='Enter username'
             onChange={e => setUsername(e.target.value)}
             value={username}
-            autoComplete="username"
+            type='username'
           />
         </Box>
         <Box mb="4">
@@ -51,6 +51,7 @@ const SignUp = () => {
             onChange={e => setEmail(e.target.value)}
             value={email}
             autoComplete="email"
+            type='email'
           />
         </Box>
         <Box mb="4">
