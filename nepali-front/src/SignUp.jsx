@@ -41,6 +41,7 @@ const SignUp = () => {
             placeholder='Enter username'
             onChange={e => setUsername(e.target.value)}
             value={username}
+            autoComplete="username"
           />
         </Box>
         <Box mb="4">
@@ -49,6 +50,7 @@ const SignUp = () => {
             placeholder='Enter email'
             onChange={e => setEmail(e.target.value)}
             value={email}
+            autoComplete="email"
           />
         </Box>
         <Box mb="4">
@@ -58,6 +60,7 @@ const SignUp = () => {
             type="password"
             onChange={e => setPassword(e.target.value)}
             value={password}
+            autoComplete="new-password"
           />
         </Box>
         <Box mb="4">
@@ -66,6 +69,7 @@ const SignUp = () => {
             placeholder='Enter first name'
             onChange={e => setFirstName(e.target.value)}
             value={firstName}
+            autoComplete="given-name"
           />
         </Box>
         <Box mb="4">
@@ -74,6 +78,7 @@ const SignUp = () => {
             placeholder='Enter last name'
             onChange={e => setLastName(e.target.value)}
             value={lastName}
+            autoComplete="family-name"
           />
         </Box>
         <Box mt="20">
@@ -85,3 +90,4 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
